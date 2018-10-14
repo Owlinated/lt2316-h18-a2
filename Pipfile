@@ -11,6 +11,7 @@ matplotlib = "*"
 scipy = "*"
 tensorflow-gpu = "==1.10.0"
 keras = "*"
+pydot = "*"
 
 [dev-packages]
 

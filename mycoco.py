@@ -178,6 +178,10 @@ def iter_captions_cats(id_lists, cats, batch=1):
                     labels = []
 
 
+def iter_all_images():
+    return iter_images([annotation_coco.getImgIds()], ['any'])
+
+
 def iter_images(id_lists, cats, size=(200, 200), batch=1):
     """
     Obtains the corresponding image data as numpy array from multiple COCO id lists.

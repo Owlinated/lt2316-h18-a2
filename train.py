@@ -2,9 +2,12 @@
 # your model training for the assignment.
 # You can create whatever additional modules and helper scripts you need,
 # as long as all the training functionality can be reached from this script.
-from keras.callbacks import ModelCheckpoint
+from keras.callbacks import ModelCheckpoint, History
+from keras.utils import plot_model
+from matplotlib import pyplot
 
 import mycoco
+import pydot # Required for plotting model
 from argparse import ArgumentParser
 from keras.layers import Input, Conv2D, MaxPooling2D, UpSampling2D, Conv3D, MaxPooling3D, UpSampling3D
 from keras.models import Model
@@ -36,9 +39,10 @@ def create_autoencoder():
     decoder = Conv2D(3, (3, 3), activation='sigmoid', padding='same')(temp_layer)
 
     autoencoder = Model(input_img, decoder)
-    autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
+    autoencoder.compile(optimizer='adam', loss='mean_absolute_error')
 
     print(autoencoder.summary())
+    plot_model(autoencoder, to_file=args.checkpointdir + '/model.svg')
     return encoder, autoencoder
 
 
@@ -55,17 +59,33 @@ def autoencoder_generator(iterator, batch_size):
         yield result, result
 
 
-def train_autoencoder(input):
+def train_autoencoder(image_iter, image_count):
     (encoder, autoencoder) = create_autoencoder()
 
-    batch_size = 8
+    batch_size = 32
+    validation_count = 100
+    history = History()
+    generator = autoencoder_generator(image_iter, batch_size)
+    validation_generator = autoencoder_generator(mycoco.iter_all_images(), validation_count)
     autoencoder.fit_generator(
-        autoencoder_generator(input, batch_size),
-        epochs=1000,
-        steps_per_epoch=batch_size,
+        generator,
+        epochs=100,
+        steps_per_epoch=image_count / batch_size,
+        validation_data=validation_generator,
+        validation_steps=validation_count / batch_size,
         callbacks=[
-            ModelCheckpoint(args.checkpointdir + '/checkpoint.{epoch:04d}.h5', monitor='val_loss', mode='auto', period=50)
+            ModelCheckpoint(args.checkpointdir + '/checkpoint.{epoch:04d}.h5', monitor='loss', mode='auto'),
+            history
         ])
+
+    pyplot.figure(figsize=[6, 6])
+    pyplot.plot(history.history['loss'])
+    pyplot.plot(history.history['val_loss'])
+    pyplot.title('Model Loss')
+    pyplot.ylabel('loss')
+    pyplot.xlabel('epoch')
+    pyplot.legend(['loss', 'val_loss'])
+    pyplot.savefig(args.checkpointdir + '/loss.svg', format='svg')
 
     return encoder, autoencoder
 
@@ -76,8 +96,9 @@ def opt_a():
     """
     mycoco.setmode('train')
     image_id_lists = mycoco.query(args.categories)
+    image_count = sum(map(lambda list: len(list), image_id_lists))
     image_iter = mycoco.iter_images(image_id_lists, args.categories)
-    encoder, autoencoder = train_autoencoder(image_iter)
+    encoder, autoencoder = train_autoencoder(image_iter, image_count)
     autoencoder.save(args.modelfile)
 
 
