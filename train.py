@@ -28,25 +28,13 @@ def create_autoencoder():
     input_img = Input(shape=(200, 200, 3))
 
     temp_layer = Conv2D(16, (3, 3), activation='relu', padding='same')(input_img)
-    temp_layer = MaxPooling2D((5, 5), padding='same')(temp_layer)
-    temp_layer = SpatialDropout2D(dropout_rate, data_format='channels_last')(temp_layer)
-    temp_layer = Conv2D(8, (3, 3), activation='relu', padding='same')(temp_layer)
-    temp_layer = MaxPooling2D((2, 2), padding='same')(temp_layer)
-    temp_layer = SpatialDropout2D(dropout_rate, data_format='channels_last')(temp_layer)
-    temp_layer = Conv2D(8, (3, 3), activation='relu', padding='same')(temp_layer)
 
     # (10, 10, 8) encoded
-    encoder = MaxPooling2D((2, 2), padding='same', name='encoder')(temp_layer)
+    encoder = MaxPooling2D((20, 20), padding='same', name='encoder')(temp_layer)
 
     temp_layer = SpatialDropout2D(dropout_rate, data_format='channels_last')(encoder)
     temp_layer = Conv2D(8, (3, 3), activation='relu', padding='same')(temp_layer)
-    temp_layer = UpSampling2D((2, 2))(temp_layer)
-    temp_layer = SpatialDropout2D(dropout_rate, data_format='channels_last')(temp_layer)
-    temp_layer = Conv2D(8, (3, 3), activation='relu', padding='same')(temp_layer)
-    temp_layer = UpSampling2D((2, 2))(temp_layer)
-    temp_layer = SpatialDropout2D(dropout_rate, data_format='channels_last')(temp_layer)
-    temp_layer = Conv2D(16, (3, 3), activation='relu', padding='same')(temp_layer)
-    temp_layer = UpSampling2D((5, 5))(temp_layer)
+    temp_layer = UpSampling2D((20, 20))(temp_layer)
     temp_layer = SpatialDropout2D(dropout_rate, data_format='channels_last')(temp_layer)
     decoder = Conv2D(3, (3, 3), activation='sigmoid', padding='same')(temp_layer)
 
