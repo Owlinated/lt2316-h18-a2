@@ -9,7 +9,7 @@ from matplotlib import pyplot
 import mycoco
 import pydot # Required for plotting model
 from argparse import ArgumentParser
-from keras.layers import Input, Conv2D, MaxPooling2D, UpSampling2D, Conv3D, MaxPooling3D, UpSampling3D
+from keras.layers import Input, Conv2D, MaxPooling2D, UpSampling2D, SpatialDropout2D
 from keras.models import Model
 from numpy import array
 
@@ -19,23 +19,31 @@ def create_autoencoder():
     Creates an autoencoder
     :return: Tuple of encoder and autoencoder models
     """
+    dropout_rate = 0
+
     input_img = Input(shape=(200, 200, 3))
 
     temp_layer = Conv2D(16, (3, 3), activation='relu', padding='same')(input_img)
     temp_layer = MaxPooling2D((5, 5), padding='same')(temp_layer)
+    temp_layer = SpatialDropout2D(dropout_rate, data_format='channels_last')(temp_layer)
     temp_layer = Conv2D(8, (3, 3), activation='relu', padding='same')(temp_layer)
     temp_layer = MaxPooling2D((2, 2), padding='same')(temp_layer)
+    temp_layer = SpatialDropout2D(dropout_rate, data_format='channels_last')(temp_layer)
     temp_layer = Conv2D(8, (3, 3), activation='relu', padding='same')(temp_layer)
 
     # (10, 10, 8) encoded
     encoder = MaxPooling2D((2, 2), padding='same', name='encoder')(temp_layer)
 
-    temp_layer = Conv2D(8, (3, 3), activation='relu', padding='same')(encoder)
-    temp_layer = UpSampling2D((2, 2))(temp_layer)
+    temp_layer = SpatialDropout2D(dropout_rate, data_format='channels_last')(encoder)
     temp_layer = Conv2D(8, (3, 3), activation='relu', padding='same')(temp_layer)
     temp_layer = UpSampling2D((2, 2))(temp_layer)
+    temp_layer = SpatialDropout2D(dropout_rate, data_format='channels_last')(temp_layer)
+    temp_layer = Conv2D(8, (3, 3), activation='relu', padding='same')(temp_layer)
+    temp_layer = UpSampling2D((2, 2))(temp_layer)
+    temp_layer = SpatialDropout2D(dropout_rate, data_format='channels_last')(temp_layer)
     temp_layer = Conv2D(16, (3, 3), activation='relu', padding='same')(temp_layer)
     temp_layer = UpSampling2D((5, 5))(temp_layer)
+    temp_layer = SpatialDropout2D(dropout_rate, data_format='channels_last')(temp_layer)
     decoder = Conv2D(3, (3, 3), activation='sigmoid', padding='same')(temp_layer)
 
     autoencoder = Model(input_img, decoder)
