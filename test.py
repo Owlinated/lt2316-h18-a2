@@ -3,8 +3,8 @@
 # You can create whatever additional modules and helper scripts you need,
 # as long as all the training functionality can be reached from this script.
 
-from argparse import ArgumentParser
 import mycoco
+from argparse import ArgumentParser
 
 
 def opt_a():

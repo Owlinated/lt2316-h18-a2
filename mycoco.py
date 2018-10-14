@@ -2,6 +2,11 @@
 # dataset. You can modify at will.  In fact, you will almost certainly have
 # to, or implement otherwise.
 
+# Limit GPU usage
+from os import environ
+print("Limiting gpu usage")
+environ['CUDA_VISIBLE_DEVICES'] = '2'
+
 import sys
 
 # This is evil, forgive me, but practical under the circumstances.

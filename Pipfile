@@ -7,9 +7,10 @@ name = "pypi"
 numpy = "*"
 scikit-image = "*"
 cython = "*"
-pycocotools = "*"
 matplotlib = "*"
 scipy = "*"
+tensorflow-gpu = "==1.10.0"
+keras = "*"
 
 [dev-packages]
 
