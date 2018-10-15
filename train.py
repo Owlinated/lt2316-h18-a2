@@ -1,3 +1,7 @@
+# Fix plotting breaking down https://stackoverflow.com/questions/37604289/tkinter-tclerror-no-display-name-and-no-display-environment-variable
+import matplotlib
+matplotlib.use('Agg')
+
 # This is the main training script that we should be able to run to grade
 # your model training for the assignment.
 # You can create whatever additional modules and helper scripts you need,
