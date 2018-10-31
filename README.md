@@ -15,7 +15,7 @@ Please use `python3.6`.
 
 - `pip3 install -r requirements.txt`
 - `python3.6 train.py -P A /scratch/gusstefl/model.h5 bear toothbrush scissors`
-- `python3.6 test.py -P A /scratch/gusstefl/pre_project/vanilla/model.h5 bear toothbrush scissors`
+- `python3.6 test.py -P A models/model_vanilla.h5 bear toothbrush scissors`
 
 ## Part 1 Option A  - Convolutional image autoencoder
 
