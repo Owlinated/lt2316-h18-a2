@@ -2,6 +2,8 @@
 # your model training for the assignment.
 # You can create whatever additional modules and helper scripts you need,
 # as long as all the training functionality can be reached from this script.
+import matplotlib
+matplotlib.use('Agg')
 from matplotlib import pyplot
 from numpy import array
 from sklearn.decomposition import PCA
