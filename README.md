@@ -7,6 +7,16 @@ of Language Technology programme.
 
 I chose to do Option A.
 
+## How to run
+
+I tried to keep track of dependencies with pipenv, but that did not really work on the server.  
+Instead I would like you to use the requirements.txt to install those requirements.  
+Please use `python3.6`.
+
+- `pip3 install -r requirements.txt`
+- `python3.6 train.py -P A /scratch/gusstefl/model.h5 bear toothbrush scissors`
+- `python3.6 test.py -P A /scratch/gusstefl/pre_project/vanilla/model.h5 bear toothbrush scissors`
+
 ## Part 1 Option A  - Convolutional image autoencoder
 
 This is the model I would like to present:
