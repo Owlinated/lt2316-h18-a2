@@ -10,11 +10,11 @@ I chose to do Option A.
 ## How to run
 
 I tried to keep track of dependencies with pipenv, but that did not really work on the server.  
-Instead I would like you to use the requirements.txt to install those requirements.  
+Instead I would like you to install the not presinstalled requirement manually with the following command.  
 Please use `python3.6`.
 
-- `pip3 install -r requirements.txt`
-- `python3.6 train.py -P A /scratch/gusstefl/model.h5 bear toothbrush scissors`
+- `pip3 install --user pydot`
+- `python3.6 train.py -P A /scratch/gusstefl/a2 /scratch/gusstefl/a2/model.h5 bear toothbrush scissors`
 - `python3.6 test.py -P A models/model_vanilla.h5 bear toothbrush scissors`
 
 ## Part 1 Option A  - Convolutional image autoencoder
